@@ -38,6 +38,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
 
 const page = ({
   params,
@@ -55,7 +56,7 @@ const page = ({
       setselectedValue(data || ({} as Demandes));
     },
   });
-
+  console.log(selectedValue);
 
 
   const { data: coordination } = useQuery({
@@ -69,6 +70,7 @@ const page = ({
       getDeleguationByCoordinationId(selectedValue?.coordination?.id),
     enabled: !!selectedValue?.coordination?.id, // Remove the unnecessary argument from the function call
   });
+
 
   interface Data {
     id?: number;
@@ -104,8 +106,11 @@ const page = ({
     recetteTotalAnneePrecedente?: number;
     etat?: string;
     typeMilieu?: string | null;
-    zipData?: any | null;
+    zipData?: File | null;
+    fileName?: string | null;
+    fileType?: string | null;
   }
+
 
   const handleSubmit = (e: any) => {
     try {
@@ -113,6 +118,40 @@ const page = ({
       console.log(selectedValue);
       const response = api
         .put(`/demande/${selectedValue?.id}`, selectedValue)
+        .then((res) => {
+          console.log(response);
+        });
+      toast({
+        description: "تم تحديث البيانات بنجاح",
+        className: "bg-green-500 text-white",
+        duration: 3000,
+        title: "نجاح",
+      });
+    } catch (error) {
+      toast({
+        description: "اسم مستخدم أو كلمة مرور غير صحيحة",
+        variant: "destructive",
+        duration: 3000,
+        title: "خطأ",
+      });
+    }
+  };
+
+
+  const registerFile = (e: any) => {
+    try {
+      e.preventDefault();
+      console.log(selectedValue);
+      const fd = new FormData();
+      if (selectedValue?.zipData) {
+        fd.append("file", selectedValue.zipData);
+      }
+      const response = api
+        .put(`/demande/upload/${selectedValue?.id}`, fd, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
         .then((res) => {
           console.log(response);
         });
@@ -147,14 +186,15 @@ const page = ({
         </div>
       </div>
       <MaxWidthWrapper>
-        <Tabs dir="rtl" defaultValue="account" className=" pt-8 ">
-          <TabsList className="grid w-full grid-cols-3 ">
-            <TabsTrigger value="account">الجمعية</TabsTrigger>
-            <TabsTrigger value="password">المؤسسة</TabsTrigger>
-            <TabsTrigger value="passwordd">الطلب</TabsTrigger>
+        <Tabs dir="rtl" defaultValue="association" className=" pt-8 ">
+          <TabsList className="grid w-full grid-cols-4 ">
+            <TabsTrigger value="association">الجمعية</TabsTrigger>
+            <TabsTrigger value="etablissement">المؤسسة</TabsTrigger>
+            <TabsTrigger value="demande">الطلب</TabsTrigger>
+            <TabsTrigger value="fichier">المرفقات</TabsTrigger>
           </TabsList>
           <form onSubmit={handleSubmit}>
-            <TabsContent value="account">
+            <TabsContent value="association">
               <Card>
                 <CardHeader>
                   <CardTitle>معلومات حول الجمعية</CardTitle>
@@ -387,7 +427,7 @@ const page = ({
                 </CardFooter>
               </Card>
             </TabsContent>
-            <TabsContent value="password">
+            <TabsContent value="etablissement">
               <Card>
                 <CardHeader>
                   <CardTitle>معلومات حول المؤسسة</CardTitle>
@@ -582,7 +622,7 @@ const page = ({
                 </CardFooter>
               </Card>
             </TabsContent>
-            <TabsContent value="passwordd">
+            <TabsContent value="demande">
               <Card>
                 <CardHeader>
                   <CardTitle>معلومات حول الطلب</CardTitle>
@@ -598,15 +638,6 @@ const page = ({
 
                   } placeholder="موضوع الطلب" />
 
-                  <Label> الطلب</Label>
-                  <Input type="file" name="zipData" onChange={
-                    (e) =>
-                      setselectedValue({
-                        ...selectedValue,
-                        zipData: e.target.value || "",
-                      })
-
-                  } />
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>رقم الطلب</Label>
@@ -654,11 +685,38 @@ const page = ({
               </Card>
             </TabsContent>
           </form>
+
+          <TabsContent value="fichier">
+            <Card>
+              <CardHeader>
+                <CardTitle>المرفقات</CardTitle>
+              </CardHeader>
+              <form onSubmit={registerFile} encType="multipart/form-data">
+                <CardContent className="space-y-2">
+                  <Label>الملفات</Label><span>{selectedValue?.fileName}</span>
+                  <Input type="file" name="zipData" onChange={
+                    (e) =>
+                      setselectedValue({
+                        ...selectedValue,
+                        zipData: e.target.files?.[0] || null,
+                        fileName: e.target.files?.[0].name || "",
+                      })
+
+                  } />
+                </CardContent>
+                <CardFooter className="gap-6">
+                  <Button type="submit">حفظ التغييرات</Button>
+                  <Link href={`http://localhost:8080/demande/download/${selectedValue?.id}`}><Button >download file</Button></Link>
+                </CardFooter>
+              </form>
+            </Card>
+          </TabsContent>
         </Tabs>
 
 
 
-      </MaxWidthWrapper>
+
+      </MaxWidthWrapper >
     </>
   );
 };

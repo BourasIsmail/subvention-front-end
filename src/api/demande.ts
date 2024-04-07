@@ -1,6 +1,14 @@
 import { Demandes } from "@/data/demande";
 import { api } from ".";
 
+export async function getFileById(id: number) {
+  try {
+    const response = await api.get(`/demande/download/${id}`, {
+      responseType: 'blob',
+    });
+  } catch (error) { }
+}
+
 export async function getDemandeByCode(code: string) {
   try {
     const response = await api.get(`/demande/code/${code}`);
@@ -138,5 +146,7 @@ export interface Demande {
   recetteTotalAnneePrecedente: number;
   etat: string;
   typeMilieu: string | null;
-  zipData: any | null;
+  zipData: File | null;
+  fileName: string | null;
+  fileType: string | null;
 }

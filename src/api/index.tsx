@@ -6,9 +6,6 @@ import { UserInfo } from "./User";
 
 const client = axios.create({
     baseURL: "http://localhost:8080",
-    headers: {
-        "Content-Type": "application/json",
-    },
 });
 
 client.interceptors.response.use(

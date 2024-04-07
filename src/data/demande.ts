@@ -44,7 +44,9 @@ export type Demandes = {
   recetteTotalAnneePrecedente?: number;
   etat?: string;
   typeMilieu?: string | null;
-  zipData?: any | null;
+  zipData?: File | null;
+  fileName?: string | null;
+  fileType?: string | null;
 };
 
 
@@ -91,6 +93,8 @@ export const data: Demandes[] = [
     typeMilieu: "حضري",
     etat: "قيد العمل",
     zipData: null,
+    fileName: null,
+    fileType: null,
   },
   // Other objects follow similar structure with their respective values...
 ];
