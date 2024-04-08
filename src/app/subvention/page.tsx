@@ -104,8 +104,9 @@ export default function Home() {
         </div>
       </div>
       <main className="bg-gray-100 min-h-screen">
-        <Button onClick={exportToExcel}>Download Excel</Button>
+
         <div className="container mx-auto py-10">
+          <Button onClick={exportToExcel} className="float-end">تنزيل إكسل</Button>
           <DataTable columns={columns} data={dataTable || []} />
 
         </div>

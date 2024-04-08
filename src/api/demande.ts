@@ -107,9 +107,9 @@ export interface Coordination {
 }
 
 export interface Deleguation {
-  id: number;
-  nom: string;
-  coordination: Coordination;
+  id: number | undefined;
+  nom: string | undefined;
+  coordination: Coordination | undefined;
 }
 
 export interface Demande {

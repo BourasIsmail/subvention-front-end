@@ -56,7 +56,6 @@ const page = ({
       setselectedValue(data || ({} as Demandes));
     },
   });
-  console.log(selectedValue);
 
 
   const { data: coordination } = useQuery({

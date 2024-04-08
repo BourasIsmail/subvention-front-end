@@ -34,7 +34,7 @@ export function MainNav({
       >
         الطلبات
       </Link>
-      {user?.deleguation == null && (
+      {user?.roles == "ADMIN_ROLES" && (
         <Link
           href="/users"
           className="text-base font-bold text-muted-foreground transition-colors hover:text-primary"

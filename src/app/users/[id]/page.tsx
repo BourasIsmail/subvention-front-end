@@ -18,7 +18,7 @@ import { useQuery } from "react-query";
 const page = ({ params }: { params: { id: number } }) => {
 
     const [selectedValue, setselectedValue] = useState<UserInfo>();
-
+    const [password, setpassword] = useState(String)
 
     const { data: coordination } = useQuery({
         queryKey: ["coordination"],
@@ -32,6 +32,7 @@ const page = ({ params }: { params: { id: number } }) => {
         enabled: !!selectedValue?.deleguation?.coordination?.id, // Remove the unnecessary argument from the function call
     });
 
+    console.log(selectedValue?.deleguation?.coordination?.id);
 
     const { data: user, isLoading } = useQuery({
         queryKey: ['user', params.id],
@@ -52,6 +53,15 @@ const page = ({ params }: { params: { id: number } }) => {
     const handleSubmit = (e: any) => {
         try {
             e.preventDefault();
+            if (password !== selectedValue?.password) {
+                toast({
+                    description: "كلمة المرور غير متطابقة",
+                    className: "destructive",
+                    duration: 3000,
+                    title: "خطأ",
+                });
+                return;
+            }
             console.log(selectedValue);
             const response = api.put(`/auth/updateUser/${selectedValue?.id}`, selectedValue)
                 .then((res) => {
@@ -87,7 +97,7 @@ const page = ({ params }: { params: { id: number } }) => {
                     </div>
                 </div>
             </div>
-            <MaxWidthWrapper>
+            <MaxWidthWrapper className="pt-9">
                 <Card>
                     <CardHeader>
                         <CardTitle></CardTitle>
@@ -118,14 +128,37 @@ const page = ({ params }: { params: { id: number } }) => {
                                     password: e.target.value || ""
                                 }
                                 )} />
+                            <Label>Confirm password</Label>
+                            <Input type="password"
+                                value={password}
+                                onChange={
+                                    (e) => setpassword(e.target.value)
+                                } />
                             <Label>role</Label>
-                            <Input type="text"
-                                value={selectedValue?.roles}
-                                onChange={(e) => setselectedValue({
-                                    ...selectedValue,
-                                    roles: e.target.value || ""
+                            <Select
+                                defaultValue={selectedValue?.roles || ""}
+                                value={selectedValue?.roles || ""}
+                                name="role"
+                                onValueChange={
+                                    (value) => {
+                                        setselectedValue({
+                                            ...selectedValue,
+                                            roles: value || ""
+                                        });
+                                    }
                                 }
-                                )} />
+                            >
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="عرض الخيارات" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>الأدوار</SelectLabel>
+                                        <SelectItem value="ADMIN_ROLES">admin</SelectItem>
+                                        <SelectItem value="USER_ROLES">user</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
                             <div className="grid grid-cols-2 gap-8">
                                 <div>
                                     <Label>المنسقية</Label>
@@ -134,9 +167,14 @@ const page = ({ params }: { params: { id: number } }) => {
                                         value={selectedValue?.deleguation?.coordination?.id?.toString() || undefined}
                                         onValueChange={
                                             (value) => {
+                                                const coordinationSelected = coordination?.find((item) => item.id === Number(value));
                                                 setselectedValue((prevState) => ({
                                                     ...prevState,
-                                                    coordination: coordination?.find((item) => item.id === Number(value)) || undefined,
+                                                    deleguation: {
+                                                        coordination: coordinationSelected,
+                                                        id: prevState?.deleguation?.id,
+                                                        nom: prevState?.deleguation?.nom,
+                                                    }
                                                 }));
                                             }
                                         }>

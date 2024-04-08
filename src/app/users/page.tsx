@@ -28,6 +28,7 @@ export default function Home() {
         queryFn: getUsers(),
     });
 
+    console.log(users);
 
 
     return (
@@ -41,7 +42,6 @@ export default function Home() {
                 </div>
             </div>
             <main className="bg-gray-100 min-h-screen">
-                <Button >Download Excel</Button>
                 <div className="container mx-auto py-10">
                     <DataTable columns={columns} data={users || []} />
 
