@@ -27,7 +27,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "react-query";
 
-const page = ({ params }: { params: { id: number } }) => {
+export default function Home() {
   const [selectedValue, setselectedValue] = useState<UserInfo>();
   const [password, setpassword] = useState(String);
 
@@ -45,16 +45,8 @@ const page = ({ params }: { params: { id: number } }) => {
     enabled: !!selectedValue?.deleguation?.coordination?.id, // Remove the unnecessary argument from the function call
   });
 
-  console.log(selectedValue?.deleguation?.coordination?.id);
+  console.log(selectedValue);
 
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["user", params.id],
-    queryFn: () => getUser(params.id),
-    enabled: !!params.id,
-    onSuccess: (data) => {
-      setselectedValue(data);
-    },
-  });
   interface User {
     id: number;
     name: string;
@@ -75,12 +67,8 @@ const page = ({ params }: { params: { id: number } }) => {
         });
         return;
       }
-      console.log(selectedValue);
-      const response = api
-        .put(`/auth/updateUser/${selectedValue?.id}`, selectedValue)
-        .then((res) => {
-          console.log(response);
-        });
+
+      const response = api.post(`/auth/addUser`, selectedValue);
       toast({
         description: "تم تحديث البيانات بنجاح",
         className: "bg-green-500 text-white",
@@ -96,9 +84,6 @@ const page = ({ params }: { params: { id: number } }) => {
       });
     }
   };
-  if (isLoading) {
-    return <progress />;
-  }
 
   return (
     <>
@@ -120,6 +105,7 @@ const page = ({ params }: { params: { id: number } }) => {
               <Label>الإسم</Label>
               <Input
                 type="text"
+                name="name"
                 value={selectedValue?.name}
                 onChange={(e) =>
                   setselectedValue({
@@ -130,7 +116,8 @@ const page = ({ params }: { params: { id: number } }) => {
               />
               <Label>البريد الإلكتروني</Label>
               <Input
-                type="text"
+                type="email"
+                name="email"
                 value={selectedValue?.email}
                 onChange={(e) =>
                   setselectedValue({
@@ -142,6 +129,7 @@ const page = ({ params }: { params: { id: number } }) => {
               <Label>كلمة السر</Label>
               <Input
                 type="password"
+                name="password"
                 value={selectedValue?.password}
                 onChange={(e) =>
                   setselectedValue({
@@ -220,9 +208,6 @@ const page = ({ params }: { params: { id: number } }) => {
                 <div>
                   <Label>المندوبية</Label>
                   <Select
-                    defaultValue={
-                      user?.deleguation?.id?.toString() || undefined
-                    }
                     name="delegation"
                     value={
                       selectedValue?.deleguation?.id?.toString() || undefined
@@ -253,12 +238,11 @@ const page = ({ params }: { params: { id: number } }) => {
                   </Select>
                 </div>
               </div>
-              <Button type="submit">تحديث</Button>
+              <Button type="submit">إضافة حساب</Button>
             </form>
           </CardContent>
         </Card>
       </MaxWidthWrapper>
     </>
   );
-};
-export default page;
+}
