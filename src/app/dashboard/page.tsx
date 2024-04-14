@@ -1,8 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { Button } from "@/components/ui/button";
 import { GiConfirmed } from "react-icons/gi";
 import { MdOutlinePendingActions } from "react-icons/md";
@@ -41,6 +38,7 @@ import {
 } from "@/api/demande";
 import PieChartBenef from "@/components/PieChart";
 import { Icons } from "@/components/icons";
+import { TakeScreentShot } from "@/lib/utils";
 
 export default function DashboardPage() {
   const [selectedValue, setselectedValue] = useState("");
@@ -71,6 +69,10 @@ export default function DashboardPage() {
         <Icons.spinner className=" h-60 w-60 animate-spin" />
       </div>
     );
+
+  const getImage = () => {
+    TakeScreentShot("ref", "dashboard", "image/png");
+  }
 
   return (
     <>
@@ -109,15 +111,15 @@ export default function DashboardPage() {
                     <SelectLabel>الخيارات</SelectLabel>
                     {selectedValue === "Coordination"
                       ? coordination?.map((item) => (
-                          <SelectItem
-                            key={item.id}
-                            value={item?.id?.toString() ?? ""}
-                          >
-                            {item.nom}
-                          </SelectItem>
-                        ))
+                        <SelectItem
+                          key={item.id}
+                          value={item?.id?.toString() ?? ""}
+                        >
+                          {item.nom}
+                        </SelectItem>
+                      ))
                       : selectedValue === "Deleguation"
-                      ? deleguation?.map((item) => (
+                        ? deleguation?.map((item) => (
                           <SelectItem
                             key={item.id}
                             value={item?.id?.toString() ?? ""}
@@ -125,14 +127,14 @@ export default function DashboardPage() {
                             {item.nom}
                           </SelectItem>
                         ))
-                      : null}
+                        : null}
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <Button>تحميل الصفحة</Button>
+              <Button onClick={getImage}>تحميل الصفحة</Button>
             </div>
           </div>
-          <Tabs dir="rtl" defaultValue="demande" className="space-y-4 right-0">
+          <Tabs id="ref" dir="rtl" defaultValue="demande" className="space-y-4 right-0">
             <TabsList>
               <TabsTrigger className="text-lg text-bold" value="demande">
                 الطلبات

@@ -19,6 +19,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useQuery } from "react-query";
 import Navbar from "@/components/navbar";
+import { TakeScreentShot } from "@/lib/utils";
 
 
 export default function Home() {
@@ -32,28 +33,33 @@ export default function Home() {
         queryFn: () => getDemandeById(Number(id) || 0),
         enabled: !!id,
     });
-    const targetRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        generatePDF(targetRef, { filename: 'page.pdf' })
-    }, []);
 
+
+
+    const getImage = () => {
+        TakeScreentShot("ref", "رقم الطلب", "image/png");
+    }
     return (
         <>
             <Navbar></Navbar>
-            <div ref={targetRef}>
+            <div>
                 <MaxWidthWrapper className="pt-14">
                     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-                        <Card className="sm:mx-auto sm:w-full sm:max-w-sm flex items-center flex-col gap-4 border  shadow-2xl">
+                        <Card dir="rtl" className="sm:mx-auto sm:w-full sm:max-w-sm flex items-center flex-col gap-4 border  shadow-2xl">
                             <CardHeader>
-                                <CardTitle className="mx-auto">رقم الطلب</CardTitle>
-                                <CardDescription>هذا الرمز ضروري لتتبع طلبك</CardDescription>
+                                <CardTitle >هذا الرمز ضروري لتتبع طلبك</CardTitle>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent id="ref">
+                                <p className="text-lg font-bold">رقم الطلب :</p>
                                 <p className="text-lg font-bold">{demande?.codeDemande}</p>
                             </CardContent>
                             <CardFooter className="flex flex-col gap-4">
                                 <p>في حالة فقدان هذا الرمز، يرجى الاتصال بوكالتك</p>
-                                <Link href={'/suivie'}><Button variant="default">تتبع طلبك</Button></Link>
+                                <div className="flex flex-row gap-4">
+                                    <Link href={'/suivie'}><Button variant="default">تتبع طلبك</Button></Link>
+                                    <Button onClick={getImage}>حفظ كصورة</Button>
+                                </div>
+
                             </CardFooter>
                         </Card>
                     </div>

@@ -43,6 +43,8 @@ export default function Home() {
 
   const exportToExcel = () => {
     const data = dataTable?.map((item: Demande) => {
+      const date = new Date(item.dateDemande);
+      let newDate = date.toLocaleDateString("ar-MA");
       return {
         "رقم الطلب": item.codeDemande,
         "اسم الجمعية": item.nomAssociation,
@@ -51,7 +53,7 @@ export default function Home() {
         "اسم الرئيس": item.nomPresident,
         "هاتف الرئيس": item.telephonePresident,
         "بريد الكتروني للرئيس": item.emailPresident,
-        "المنسقية": item.deleguation.coordination.nom,
+        "المنسقية": item.coordination.nom,
         "المندوبية": item.deleguation.nom,
         "المجال": item.typeMilieu,
         "اسم المؤسسة": item.nomEtablissement,
@@ -73,7 +75,7 @@ export default function Home() {
         "مدة صلاحية المكتب": item.dureeValidite,
         "مجموع المصاريف عن السنة الفارطة": item.recetteTotalAnneePrecedente,
         "مجموع المداخيل عن السنة الفارطة": item.revenuTotalAnneePrecedente,
-        "تاريخ الطلب": item.dateDemande,
+        "تاريخ الطلب": newDate,
         "موضوع الطلب": item.sujetDemande
       };
     });

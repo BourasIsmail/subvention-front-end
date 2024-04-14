@@ -26,6 +26,7 @@ import { UserNav } from "@/components/user-nav";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "react-query";
+import { set } from "date-fns";
 
 const page = ({ params }: { params: { id: number } }) => {
   const [selectedValue, setselectedValue] = useState<UserInfo>();
@@ -55,6 +56,8 @@ const page = ({ params }: { params: { id: number } }) => {
       setselectedValue(data);
     },
   });
+
+
   interface User {
     id: number;
     name: string;
@@ -66,7 +69,8 @@ const page = ({ params }: { params: { id: number } }) => {
   const handleSubmit = (e: any) => {
     try {
       e.preventDefault();
-      if (password !== selectedValue?.password) {
+      const element = document.getElementById("password") as HTMLInputElement;
+      if ((password !== selectedValue?.password) && element.value !== "") {
         toast({
           description: "كلمة المرور غير متطابقة",
           className: "destructive",
@@ -99,6 +103,7 @@ const page = ({ params }: { params: { id: number } }) => {
   if (isLoading) {
     return <progress />;
   }
+
 
   return (
     <>
@@ -142,7 +147,8 @@ const page = ({ params }: { params: { id: number } }) => {
               <Label>كلمة السر</Label>
               <Input
                 type="password"
-                value={selectedValue?.password}
+                id="password"
+                /*value={selectedValue?.password}*/
                 onChange={(e) =>
                   setselectedValue({
                     ...selectedValue,

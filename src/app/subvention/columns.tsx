@@ -68,6 +68,11 @@ export const columns: ColumnDef<Demandes>[] = [
   {
     accessorKey: "dateDemande",
     header: "تاريخ الطلب",
+    cell(props) {
+      const demande = props.row.original;
+      const dateDemande = demande.dateDemande ? new Date(demande.dateDemande) : null;
+      return dateDemande ? dateDemande.toLocaleDateString("ar-MA") : "";
+    },
     footer: "تاريخ الطلب",
   },
   {
