@@ -43,15 +43,17 @@ const RightSideHome = () => {
           </span>
         </div>
       </div>
-      <Button
-        variant="outline"
-        type="button"
-        disabled={isLoading}
-        className="text-base"
-      >
-        {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-        متابعة الطلب
-      </Button>
+      <Link href="/suivie">
+        <Button
+          variant="outline"
+          type="button"
+          disabled={isLoading}
+          className="w-full text-base"
+        >
+          {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+          متابعة الطلب
+        </Button>
+      </Link>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
