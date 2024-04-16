@@ -25,7 +25,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { api } from "@/api";
 import { useQueryClient } from "react-query";
@@ -70,7 +70,9 @@ export const columns: ColumnDef<Demandes>[] = [
     header: "تاريخ الطلب",
     cell(props) {
       const demande = props.row.original;
-      const dateDemande = demande.dateDemande ? new Date(demande.dateDemande) : null;
+      const dateDemande = demande.dateDemande
+        ? new Date(demande.dateDemande)
+        : null;
       return dateDemande ? dateDemande.toLocaleDateString("ar-MA") : "";
     },
     footer: "تاريخ الطلب",
@@ -85,8 +87,8 @@ export const columns: ColumnDef<Demandes>[] = [
             demande.etat === "قيد العمل"
               ? "bg-yellow-200 p-2 rounded-lg"
               : demande.etat === "موافق عليه"
-                ? "bg-green-200 p-2 rounded-lg"
-                : "bg-red-200 p-2 rounded-lg"
+              ? "bg-green-200 p-2 rounded-lg"
+              : "bg-red-200 p-2 rounded-lg"
           }
         >
           {demande.etat}
@@ -111,14 +113,14 @@ export const columns: ColumnDef<Demandes>[] = [
     cell: ({ row }) => {
       const demande = row.original;
 
-      const queryClient = useQueryClient()
+      const queryClient = useQueryClient();
 
       const deleteDemande = async () => {
-        const res = await api.delete(`/demande/${demande.id}`)
-        queryClient.invalidateQueries("AllDemandes")
-      }
+        const res = await api.delete(`/demande/${demande.id}`);
+        queryClient.invalidateQueries("AllDemandes");
+      };
 
-      const [open, setopen] = useState(false)
+      const [open, setopen] = useState(false);
 
       return (
         <>
@@ -133,27 +135,35 @@ export const columns: ColumnDef<Demandes>[] = [
               <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <Link
-                href={demande.codeDemande ? `/subvention/${demande.codeDemande}` : `#`}
+                href={
+                  demande.codeDemande
+                    ? `/subvention/${demande.codeDemande}`
+                    : `#`
+                }
               >
-                <DropdownMenuItem>تحديث</DropdownMenuItem></Link>
-              <DropdownMenuItem onClick={() => setopen(true)}>حذف الطلب</DropdownMenuItem>
-
+                <DropdownMenuItem>تحديث</DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem onClick={() => setopen(true)}>
+                حذف الطلب
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div >
-            <AlertDialog open={open} onOpenChange={setopen} >
-              <AlertDialogTrigger asChild >
-              </AlertDialogTrigger>
-              <AlertDialogContent >
+          <div>
+            <AlertDialog open={open} onOpenChange={setopen}>
+              <AlertDialogTrigger asChild></AlertDialogTrigger>
+              <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
                   <AlertDialogDescription>
-                    هذا الإجراء لا يمكن التراجع عنه. سيتم حذف هذا الطلب بشكل دائم وإزالة البيانات الخاصة بك من خوادمنا.
+                    هذا الإجراء لا يمكن التراجع عنه. سيتم حذف هذا الطلب بشكل
+                    دائم وإزالة البيانات الخاصة بك من خوادمنا.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="gap-8">
                   <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                  <AlertDialogAction onClick={deleteDemande}>متابعة</AlertDialogAction>
+                  <AlertDialogAction onClick={deleteDemande}>
+                    متابعة
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>

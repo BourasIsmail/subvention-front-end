@@ -57,7 +57,6 @@ const page = ({ params }: { params: { id: number } }) => {
     },
   });
 
-
   interface User {
     id: number;
     name: string;
@@ -70,9 +69,26 @@ const page = ({ params }: { params: { id: number } }) => {
     try {
       e.preventDefault();
       const element = document.getElementById("password") as HTMLInputElement;
-      if ((password !== selectedValue?.password) && element.value !== "") {
+      if (password !== selectedValue?.password && element.value !== "") {
         toast({
           description: "كلمة المرور غير متطابقة",
+          className: "destructive",
+          duration: 3000,
+          title: "خطأ",
+        });
+        return;
+      }
+      if ((selectedValue?.password?.length ?? 0) < 6) {
+        toast({
+          description: "كلمة المرور يجب أن تكون أكثر من 6 أحرف",
+          className: "destructive",
+          duration: 3000,
+          title: "خطأ",
+        });
+        return;
+      } else if (selectedValue?.password?.trim() === "") {
+        toast({
+          description: "كلمة المرور لا يمكن أن تكون فارغة",
           className: "destructive",
           duration: 3000,
           title: "خطأ",
@@ -104,7 +120,6 @@ const page = ({ params }: { params: { id: number } }) => {
     return <progress />;
   }
 
-
   return (
     <>
       <div className="border-b">
@@ -135,7 +150,7 @@ const page = ({ params }: { params: { id: number } }) => {
               />
               <Label>البريد الإلكتروني</Label>
               <Input
-                type="text"
+                type="email"
                 value={selectedValue?.email}
                 onChange={(e) =>
                   setselectedValue({

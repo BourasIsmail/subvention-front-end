@@ -13,7 +13,7 @@ import {
 } from "./ui/dropdown-menu";
 import { useState } from "react";
 import { UserInfo } from "@/api/User";
-import { getCurrentUser, logout } from "@/api";
+import { api, getCurrentUser, logout } from "@/api";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,10 +25,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Label } from "@radix-ui/react-label";
+import { toast } from "@/components/ui/use-toast";
+import { Label } from "./ui/label";
 
 export function UserNav() {
-
   const [user, setUser] = useState<UserInfo>();
 
   useQuery("currentUser", getCurrentUser(), {
@@ -37,12 +37,51 @@ export function UserNav() {
     },
   });
 
-  const [open, setopen] = useState(false)
+  const [open, setopen] = useState(false);
+  const [password, setpassword] = useState("");
 
   const handleLogout = async () => {
     await logout();
     window.location.reload();
-  }
+  };
+
+  const handleSubmit = async (e: any) => {
+    try {
+      e.preventDefault();
+      const element = document.getElementById("password") as HTMLInputElement;
+      if (
+        password !== user?.password &&
+        element.value !== "" &&
+        user?.password == ""
+      ) {
+        toast({
+          description: "كلمة المرور غير متطابقة",
+          className: "destructive",
+          duration: 3000,
+          title: "خطأ",
+        });
+        return;
+      }
+      const response = api
+        .put(`/auth/updateUser/${user?.id}`, user)
+        .then((res) => {
+          console.log(response);
+        });
+      toast({
+        description: "تم تحديث البيانات بنجاح",
+        className: "bg-green-500 text-white",
+        duration: 3000,
+        title: "نجاح",
+      });
+    } catch (error) {
+      toast({
+        description: "حدث خطأ ما",
+        className: "destructive",
+        duration: 3000,
+        title: "خطأ",
+      });
+    }
+  };
 
   return (
     <>
@@ -51,7 +90,9 @@ export function UserNav() {
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarImage src="" alt="@shadcn" />
-              <AvatarFallback>{user?.roles == "USER_ROLES" ? "DE" : "AD"}</AvatarFallback>
+              <AvatarFallback>
+                {user?.roles == "USER_ROLES" ? "DE" : "AD"}
+              </AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
@@ -66,7 +107,9 @@ export function UserNav() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => setopen(true)}>معلوماتي الشخصية</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setopen(true)}>
+              معلوماتي الشخصية
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleLogout}>تسجيل خروج</DropdownMenuItem>
@@ -77,40 +120,86 @@ export function UserNav() {
         <AlertDialog open={open} onOpenChange={setopen}>
           <AlertDialogTrigger asChild></AlertDialogTrigger>
           <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex">معلوماتي الشخصية</AlertDialogTitle>
-              <AlertDialogDescription>
-                <div className="flex flex-col space-y-1">
-                  <div className="flex flex-row justify-between">
-                    <Label>الإسم</Label>
-                    <p className="text-sm font-medium ">{user?.name}</p>
+            <form onSubmit={handleSubmit}>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex">
+                  معلوماتي الشخصية
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  <div className="flex flex-col space-y-1">
+                    <div className="flex flex-row justify-between">
+                      <Label>الإسم</Label>
+                      <input
+                        name="name"
+                        type="text"
+                        value={user?.name}
+                        onChange={(e) =>
+                          setUser({ ...user, name: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-row justify-between">
+                      <Label>البريد الإلكتروني</Label>
+                      <input
+                        name="email"
+                        type="email"
+                        value={user?.email}
+                        onChange={(e) =>
+                          setUser({ ...user, email: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-row justify-between">
+                      <Label>الدور</Label>
+                      <p className="text-sm font-medium">{user?.roles}</p>
+                    </div>
+                    <div className="flex flex-row justify-between">
+                      <Label>المندوبية</Label>
+                      <p className="text-sm font-medium">
+                        {user?.deleguation?.nom || "لا يوجد مندوبية"}
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-between">
+                      <Label>التنسيقية</Label>
+                      <p className="text-sm font-medium">
+                        {user?.deleguation?.coordination?.nom ||
+                          "لا يوجد منسقية"}
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-between">
+                      <Label>كلمة السر</Label>
+                      <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        onChange={(e) =>
+                          setUser({ ...user, password: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-row justify-between">
+                      <Label>تأكيد كلمة السر</Label>
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setpassword(e.target.value)}
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-row justify-between">
-                    <Label>البريد الإلكتروني</Label>
-                    <p className="text-sm font-medium">{user?.email}</p>
-                  </div>
-                  <div className="flex flex-row justify-between">
-                    <Label>الدور</Label>
-                    <p className="text-sm font-medium">{user?.roles}</p>
-                  </div>
-                  <div className="flex flex-row justify-between">
-                    <Label>المندوبية</Label>
-                    <p className="text-sm font-medium">
-                      {user?.deleguation?.nom || "لا يوجد مندوبية"}
-                    </p>
-                  </div>
-                  <div className="flex flex-row justify-between">
-                    <Label>التنسيقية</Label>
-                    <p className="text-sm font-medium">
-                      {user?.deleguation?.coordination?.nom || "لا يوجد منسقية"}
-                    </p>
-                  </div>
-                </div>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="gap-8">
-              <AlertDialogCancel className="bg-blue-800 text-white">إلغاء</AlertDialogCancel>
-            </AlertDialogFooter>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="gap-8">
+                <AlertDialogCancel className="bg-blue-800 text-white">
+                  إلغاء
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  type="submit"
+                  className="bg-blue-800 text-white"
+                >
+                  حفظ
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </form>
           </AlertDialogContent>
         </AlertDialog>
       </div>

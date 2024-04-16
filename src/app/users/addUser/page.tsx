@@ -55,9 +55,10 @@ export default function Home() {
     role: string;
     delegation: Deleguation;
   }
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     try {
       e.preventDefault();
+      const element = document.getElementById("password") as HTMLInputElement;
       if (password !== selectedValue?.password) {
         toast({
           description: "كلمة المرور غير متطابقة",
@@ -68,6 +69,23 @@ export default function Home() {
         return;
       }
 
+      if (selectedValue.password.length < 6) {
+        toast({
+          description: "كلمة المرور يجب أن تكون أكثر من 6 أحرف",
+          className: "destructive",
+          duration: 3000,
+          title: "خطأ",
+        });
+        return;
+      } else if (selectedValue.password.trim() === "") {
+        toast({
+          description: "كلمة المرور لا يمكن أن تكون فارغة",
+          className: "destructive",
+          duration: 3000,
+          title: "خطأ",
+        });
+        return;
+      }
       const response = api.post(`/auth/addUser`, selectedValue);
       toast({
         description: "تم تحديث البيانات بنجاح",
@@ -104,6 +122,7 @@ export default function Home() {
             <form onSubmit={handleSubmit}>
               <Label>الإسم</Label>
               <Input
+                required
                 type="text"
                 name="name"
                 value={selectedValue?.name}
@@ -116,6 +135,7 @@ export default function Home() {
               />
               <Label>البريد الإلكتروني</Label>
               <Input
+                required
                 type="email"
                 name="email"
                 value={selectedValue?.email}
@@ -128,6 +148,7 @@ export default function Home() {
               />
               <Label>كلمة السر</Label>
               <Input
+                required
                 type="password"
                 name="password"
                 value={selectedValue?.password}
@@ -140,6 +161,7 @@ export default function Home() {
               />
               <Label>تأكيد كلمة السر</Label>
               <Input
+                required
                 type="password"
                 value={password}
                 onChange={(e) => setpassword(e.target.value)}

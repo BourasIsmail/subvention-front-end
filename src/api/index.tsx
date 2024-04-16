@@ -12,6 +12,8 @@ client.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       console.log("error 401");
+    } else if (error.response.status === 400) {
+      console.log("error 400");
     } else if (error.response.status === 403) {
       console.log("error 403");
       deleteCookie("token");
