@@ -1,4 +1,4 @@
-import { Deleguation } from "./demande";
+import { Coordination, Deleguation } from "./demande";
 
 export type UserInfo = {
   id?: number | undefined;
@@ -7,4 +7,5 @@ export type UserInfo = {
   roles?: string | undefined;
   password?: string | undefined;
   deleguation?: Deleguation | undefined;
+  coordination?: Coordination | undefined;
 };

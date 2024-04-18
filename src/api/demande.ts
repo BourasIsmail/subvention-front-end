@@ -4,65 +4,65 @@ import { api } from ".";
 export async function getFileById(id: number) {
   try {
     const response = await api.get(`/demande/download/${id}`, {
-      responseType: 'blob',
+      responseType: "blob",
     });
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getDemandeByCode(code: string) {
   try {
     const response = await api.get(`/demande/code/${code}`);
     return response.data as Demandes;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getDemandeById(id: number) {
   try {
     const response = await api.get(`/demande/${id}`);
     return response.data as Demandes;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getDemandeByCoordinationId(id: number) {
   try {
     const response = await api.get(`/demande/byCoordination/${id}`);
     return response.data as Demandes[];
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getDemandeByDeleguationId(id: number) {
   try {
     const response = await api.get(`/demande/byDeleguation/${id}`);
     return response.data as Demandes[];
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getAllDemandes() {
   try {
     const response = await api.get(`/demande`);
     return response.data as Demandes[];
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getAllCoordination() {
   try {
     const response = await api.get(`/coordination`);
     return response.data as Coordination[];
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getAllDeleguation() {
   try {
     const response = await api.get(`/deleguation`);
     return response.data as Deleguation[];
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getDeleguationByCoordinationId(id: number | undefined) {
   try {
     const response = await api.get(`/deleguation/byIdCoord/${id}`);
     return response.data as Deleguation[];
-  } catch (error) { }
+  } catch (error) {}
 }
 
 export async function getDashboard(
@@ -71,11 +71,12 @@ export async function getDashboard(
 ) {
   try {
     const response = await api.get(
-      `/demande/dashboard?delegiationId=${deleguationId || ""}&coordinationId=${coordinationId || ""
+      `/demande/dashboard?delegiationId=${deleguationId || ""}&coordinationId=${
+        coordinationId || ""
       }`
     );
     return response.data as UserData;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 interface UserData {
@@ -149,4 +150,7 @@ export interface Demande {
   zipData: File | null;
   fileName: string | null;
   fileType: string | null;
+  supprime: boolean;
+  dateSuppression: string | null;
+  dateDerniereModification: string | null;
 }

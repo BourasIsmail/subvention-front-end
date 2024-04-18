@@ -47,7 +47,7 @@ const page = ({
     code: string;
   };
 }) => {
-  const [selectedValue, setselectedValue] = useState<Demandes>()
+  const [selectedValue, setselectedValue] = useState<Demandes>();
   const { data: demande, isLoading } = useQuery({
     queryKey: ["demande", params.code],
     queryFn: () => getDemandeByCode(params.code || ""),
@@ -56,7 +56,6 @@ const page = ({
       setselectedValue(data || ({} as Demandes));
     },
   });
-
 
   const { data: coordination } = useQuery({
     queryKey: ["coordination"],
@@ -69,7 +68,6 @@ const page = ({
       getDeleguationByCoordinationId(selectedValue?.coordination?.id),
     enabled: !!selectedValue?.coordination?.id, // Remove the unnecessary argument from the function call
   });
-
 
   interface Data {
     id?: number;
@@ -110,7 +108,6 @@ const page = ({
     fileType?: string | null;
   }
 
-
   const handleSubmit = (e: any) => {
     try {
       e.preventDefault();
@@ -136,7 +133,6 @@ const page = ({
     }
   };
 
-
   const registerFile = (e: any) => {
     try {
       e.preventDefault();
@@ -148,8 +144,8 @@ const page = ({
       const response = api
         .put(`/demande/upload/${selectedValue?.id}`, fd, {
           headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+            "Content-Type": "multipart/form-data",
+          },
         })
         .then((res) => {
           console.log(response);
@@ -202,41 +198,65 @@ const page = ({
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>اسم الجمعية</Label>
-                      <Input type="text" value={selectedValue?.nomAssociation} name="nomAssociation" onChange={(e) =>
-                        setselectedValue({
-                          ...selectedValue,
-                          nomAssociation: e.target.value || "",
-                        })
-                      } placeholder="اسم الجمعية" />
+                      <Input
+                        type="text"
+                        value={selectedValue?.nomAssociation}
+                        name="nomAssociation"
+                        onChange={(e) =>
+                          setselectedValue({
+                            ...selectedValue,
+                            nomAssociation: e.target.value || "",
+                          })
+                        }
+                        placeholder="اسم الجمعية"
+                      />
                     </div>
                     <div>
                       <Label>العنوان</Label>
-                      <Input type="text" value={selectedValue?.addresse} name="addresse" onChange={(e) =>
-                        setselectedValue({
-                          ...selectedValue,
-                          addresse: e.target.value || "",
-                        })
-                      } placeholder="العنوان" />
+                      <Input
+                        type="text"
+                        value={selectedValue?.addresse}
+                        name="addresse"
+                        onChange={(e) =>
+                          setselectedValue({
+                            ...selectedValue,
+                            addresse: e.target.value || "",
+                          })
+                        }
+                        placeholder="العنوان"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>اسم الرئيس</Label>
-                      <Input type="text" value={selectedValue?.nomPresident} name="nomPresident" onChange={(e) =>
-                        setselectedValue({
-                          ...selectedValue,
-                          nomPresident: e.target.value || "",
-                        })
-                      } placeholder="اسم الرئيس" />
+                      <Input
+                        type="text"
+                        value={selectedValue?.nomPresident}
+                        name="nomPresident"
+                        onChange={(e) =>
+                          setselectedValue({
+                            ...selectedValue,
+                            nomPresident: e.target.value || "",
+                          })
+                        }
+                        placeholder="اسم الرئيس"
+                      />
                     </div>
                     <div>
                       <Label>هاتف الرئيس</Label>
-                      <Input type="text" value={selectedValue?.telephonePresident} name="telephonePresident" onChange={(e) =>
-                        setselectedValue({
-                          ...selectedValue,
-                          telephonePresident: e.target.value || "",
-                        })
-                      } placeholder="هاتف الرئيس" />
+                      <Input
+                        type="text"
+                        value={selectedValue?.telephonePresident}
+                        name="telephonePresident"
+                        onChange={(e) =>
+                          setselectedValue({
+                            ...selectedValue,
+                            telephonePresident: e.target.value || "",
+                          })
+                        }
+                        placeholder="هاتف الرئيس"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-8">
@@ -313,7 +333,9 @@ const page = ({
                         onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
-                            revenuTotalAnneePrecedente: Number(e.target.value || ""),
+                            revenuTotalAnneePrecedente: Number(
+                              e.target.value || ""
+                            ),
                           })
                         }
                         placeholder="مجموع المداخيل عن السنة الفارطة"
@@ -340,15 +362,20 @@ const page = ({
                       <Label>المنسقية</Label>
                       <Select
                         name="coordination"
-                        value={selectedValue?.coordination?.id?.toString() || undefined}
-                        onValueChange={
-                          (value) => {
-                            setselectedValue({
-                              ...selectedValue,
-                              coordination: coordination?.find((item) => item.id === Number(value)) || undefined,
-                            });
-                          }
-                        }>
+                        value={
+                          selectedValue?.coordination?.id?.toString() ||
+                          undefined
+                        }
+                        onValueChange={(value) => {
+                          setselectedValue({
+                            ...selectedValue,
+                            coordination:
+                              coordination?.find(
+                                (item) => item.id === Number(value)
+                              ) || undefined,
+                          });
+                        }}
+                      >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="عرض الخيارات" />
                         </SelectTrigger>
@@ -367,17 +394,23 @@ const page = ({
                     <div>
                       <Label>المندوبية</Label>
                       <Select
-                        defaultValue={demande?.deleguation?.id?.toString() || undefined}
-                        name="delegation"
-                        value={selectedValue?.deleguation?.id?.toString() || undefined}
-                        onValueChange={
-                          (value) => {
-                            setselectedValue({
-                              ...selectedValue,
-                              deleguation: deleguation?.find((item) => item.id === Number(value)) || undefined,
-                            });
-                          }
+                        defaultValue={
+                          demande?.deleguation?.id?.toString() || undefined
                         }
+                        name="delegation"
+                        value={
+                          selectedValue?.deleguation?.id?.toString() ||
+                          undefined
+                        }
+                        onValueChange={(value) => {
+                          setselectedValue({
+                            ...selectedValue,
+                            deleguation:
+                              deleguation?.find(
+                                (item) => item.id === Number(value)
+                              ) || undefined,
+                          });
+                        }}
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="عرض الخيارات" />
@@ -395,31 +428,6 @@ const page = ({
                       </Select>
                     </div>
                   </div>
-                  <Label>المجال</Label>
-                  <Select
-                    defaultValue={demande?.typeMilieu ?? ""}
-                    value={selectedValue?.typeMilieu ?? ""}
-                    name="typeMilieu"
-                    onValueChange={
-                      (value) => {
-                        setselectedValue({
-                          ...selectedValue,
-                          typeMilieu: value,
-                        });
-                      }
-                    }
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="عرض الخيارات" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>المجال</SelectLabel>
-                        <SelectItem value="حظري">حظري</SelectItem>
-                        <SelectItem value="قروي">قروي</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
                 </CardContent>
                 <CardFooter>
                   <Button type="submit">حفظ التغييرات</Button>
@@ -435,14 +443,18 @@ const page = ({
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>اسم المؤسسة</Label>
-                      <Input type="text" value={selectedValue?.nomEtablissement} name="nomEtablissement" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.nomEtablissement}
+                        name="nomEtablissement"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             nomEtablissement: e.target.value || "",
                           })
-
-                      } placeholder="اسم المؤسسة" />
+                        }
+                        placeholder="اسم المؤسسة"
+                      />
                     </div>
                     <div>
                       <Label>بريد الكتروني للمدير</Label>
@@ -463,37 +475,50 @@ const page = ({
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>اسم المدير</Label>
-                      <Input type="text" value={selectedValue?.nomDirecteur || ""} name="nomDirecteur" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.nomDirecteur || ""}
+                        name="nomDirecteur"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             nomDirecteur: e.target.value || "",
                           })
-                      } placeholder="اسم المدير" />
+                        }
+                        placeholder="اسم المدير"
+                      />
                     </div>
                     <div>
                       <Label>هاتف المدير</Label>
-                      <Input type="text" value={selectedValue?.telDirecteur} name="telDirecteur" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.telDirecteur}
+                        name="telDirecteur"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             telDirecteur: e.target.value || "",
                           })
-
-                      } placeholder="هاتف المدير" />
+                        }
+                        placeholder="هاتف المدير"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>رقم الرخصة</Label>
-                      <Input type="text" value={selectedValue?.numAutorisation} name="numAutorisation" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.numAutorisation}
+                        name="numAutorisation"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             numAutorisation: e.target.value || "",
                           })
-
-                      } placeholder="رقم الرخصة" />
+                        }
+                        placeholder="رقم الرخصة"
+                      />
                     </div>
                     <div>
                       <Label>مجموع الطاقة الإستعابية المرخصة</Label>
@@ -511,109 +536,177 @@ const page = ({
                       />
                     </div>
                   </div>
+                  <Label>المجال الطبيعي</Label>
+                  <Select
+                    defaultValue={demande?.typeMilieu ?? ""}
+                    value={selectedValue?.typeMilieu ?? ""}
+                    name="typeMilieu"
+                    onValueChange={(value) => {
+                      setselectedValue({
+                        ...selectedValue,
+                        typeMilieu: value,
+                      });
+                    }}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="عرض الخيارات" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>المجال الطبيعي</SelectLabel>
+                        <SelectItem value="حظري">حظري</SelectItem>
+                        <SelectItem value="قروي">قروي</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>عدد المستفيدات</Label>
-                      <Input type="text" value={selectedValue?.nbrBeneficiairesFemmes} name="nbrBeneficiairesFemmes" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.nbrBeneficiairesFemmes}
+                        name="nbrBeneficiairesFemmes"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             nbrBeneficiairesFemmes: Number(e.target.value),
                           })
-                      } placeholder="عدد المستفيدات" />
+                        }
+                        placeholder="عدد المستفيدات"
+                      />
                     </div>
                     <div>
                       <Label>عدد المستفيدين</Label>
-                      <Input type="text"
+                      <Input
+                        type="text"
                         value={selectedValue?.nbrBeneficiairesHommes}
                         name="nbrBeneficiairesHommes"
-                        onChange={
-                          (e) =>
-                            setselectedValue({
-                              ...selectedValue,
-                              nbrBeneficiairesHommes: Number(e.target.value),
-                            })
-                        } placeholder="عدد المستفيدين" />
+                        onChange={(e) =>
+                          setselectedValue({
+                            ...selectedValue,
+                            nbrBeneficiairesHommes: Number(e.target.value),
+                          })
+                        }
+                        placeholder="عدد المستفيدين"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>عدد المستفيدين من الخدمات النهارية</Label>
-                      <Input type="text" value={selectedValue?.nbrBeneficiairesServiceMatinal} name="nbrBeneficiairesServiceMatinal" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.nbrBeneficiairesServiceMatinal}
+                        name="nbrBeneficiairesServiceMatinal"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
-                            nbrBeneficiairesServiceMatinal: Number(e.target.value),
+                            nbrBeneficiairesServiceMatinal: Number(
+                              e.target.value
+                            ),
                           })
-                      } placeholder="عدد المستفيدين من الخدمات النهارية" />
+                        }
+                        placeholder="عدد المستفيدين من الخدمات النهارية"
+                      />
                     </div>
                     <div>
                       <Label>عدد المستفيدين من الخدمات الجزئية</Label>
-                      <Input type="text"
+                      <Input
+                        type="text"
                         value={selectedValue?.nbrBeneficiairesServicePartiel}
                         name="nbrBeneficiairesServicePartiel"
-                        onChange={
-                          (e) =>
-                            setselectedValue({
-                              ...selectedValue,
-                              nbrBeneficiairesServicePartiel: Number(e.target.value),
-                            })
-                        } placeholder="عدد المستفيدين من الخدمات الجزئية" />
+                        onChange={(e) =>
+                          setselectedValue({
+                            ...selectedValue,
+                            nbrBeneficiairesServicePartiel: Number(
+                              e.target.value
+                            ),
+                          })
+                        }
+                        placeholder="عدد المستفيدين من الخدمات الجزئية"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>عدد المستفيدين من الخدمات الكلية</Label>
-                      <Input type="text" value={selectedValue?.nbrBeneficiairesServiceTotal} name="nbrBeneficiairesServiceTotal" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.nbrBeneficiairesServiceTotal}
+                        name="nbrBeneficiairesServiceTotal"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
-                            nbrBeneficiairesServiceTotal: Number(e.target.value),
+                            nbrBeneficiairesServiceTotal: Number(
+                              e.target.value
+                            ),
                           })
-                      } placeholder="عدد المستفيدين من الخدمات الكلية" />
+                        }
+                        placeholder="عدد المستفيدين من الخدمات الكلية"
+                      />
                     </div>
                     <div>
                       <Label>عدد المستفيدين الإجمالي</Label>
-                      <Input type="text" value={selectedValue?.nbrTotalBeneficiaires} name="nbrTotalBeneficiaires" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.nbrTotalBeneficiaires}
+                        name="nbrTotalBeneficiaires"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             nbrTotalBeneficiaires: Number(e.target.value),
                           })
-                      } placeholder="عدد المستفيدين الإجمالي" />
+                        }
+                        placeholder="عدد المستفيدين الإجمالي"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>عدد المستخدمات</Label>
-                      <Input type="text" value={selectedValue?.nbrAgentsFemmes} name="nbrAgentsFemmes" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.nbrAgentsFemmes}
+                        name="nbrAgentsFemmes"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             nbrAgentsFemmes: Number(e.target.value),
                           })
-                      } placeholder="عدد المستخدمات" />
+                        }
+                        placeholder="عدد المستخدمات"
+                      />
                     </div>
                     <div>
                       <Label>عدد المستخدمين</Label>
-                      <Input type="text" value={selectedValue?.nbrAgentsHommes} name="nbrAgentsHommes" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.nbrAgentsHommes}
+                        name="nbrAgentsHommes"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             nbrAgentsHommes: Number(e.target.value),
                           })
-                      } placeholder="عدد المستخدمين" />
+                        }
+                        placeholder="عدد المستخدمين"
+                      />
                     </div>
                   </div>
                   <div>
                     <Label>عدد المستخدمين الإجمالي</Label>
-                    <Input type="text" value={selectedValue?.nbrTotalAgents} name="nbrTotalAgents" onChange={
-                      (e) =>
+                    <Input
+                      type="text"
+                      value={selectedValue?.nbrTotalAgents}
+                      name="nbrTotalAgents"
+                      onChange={(e) =>
                         setselectedValue({
                           ...selectedValue,
                           nbrTotalAgents: Number(e.target.value),
                         })
-                    } placeholder="عدد المستخدمين الإجمالي" />
+                      }
+                      placeholder="عدد المستخدمين الإجمالي"
+                    />
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -628,25 +721,33 @@ const page = ({
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <Label>موضوع الطلب</Label>
-                  <Textarea value={selectedValue?.sujetDemande} name="sujetDemande" onChange={
-                    (e) =>
+                  <Textarea
+                    value={selectedValue?.sujetDemande}
+                    name="sujetDemande"
+                    onChange={(e) =>
                       setselectedValue({
                         ...selectedValue,
                         sujetDemande: e.target.value || "",
                       })
-
-                  } placeholder="موضوع الطلب" />
+                    }
+                    placeholder="موضوع الطلب"
+                  />
 
                   <div className="grid grid-cols-2 gap-8">
                     <div>
                       <Label>رقم الطلب</Label>
-                      <Input type="text" value={selectedValue?.codeDemande} name="codeDemande" onChange={
-                        (e) =>
+                      <Input
+                        type="text"
+                        value={selectedValue?.codeDemande}
+                        name="codeDemande"
+                        onChange={(e) =>
                           setselectedValue({
                             ...selectedValue,
                             codeDemande: e.target.value,
                           })
-                      } placeholder="رقم الطلب" />
+                        }
+                        placeholder="رقم الطلب"
+                      />
                     </div>
                     <div>
                       <Label>حالة الطلب</Label>
@@ -654,14 +755,12 @@ const page = ({
                         defaultValue={demande?.etat ?? ""}
                         value={selectedValue?.etat ?? ""}
                         name="etat"
-                        onValueChange={
-                          (value) => {
-                            setselectedValue({
-                              ...selectedValue,
-                              etat: value,
-                            });
-                          }
-                        }
+                        onValueChange={(value) => {
+                          setselectedValue({
+                            ...selectedValue,
+                            etat: value,
+                          });
+                        }}
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="عرض الخيارات" />
@@ -669,7 +768,9 @@ const page = ({
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>حالة الطلب</SelectLabel>
-                            <SelectItem value="موافق عليه">موافق عليه</SelectItem>
+                            <SelectItem value="موافق عليه">
+                              موافق عليه
+                            </SelectItem>
                             <SelectItem value="قيد العمل">قيد العمل</SelectItem>
                             <SelectItem value="مرفوض">مرفوض</SelectItem>
                           </SelectGroup>
@@ -692,30 +793,33 @@ const page = ({
               </CardHeader>
               <form onSubmit={registerFile} encType="multipart/form-data">
                 <CardContent className="space-y-2">
-                  <Label>الملفات</Label><span>{selectedValue?.fileName}</span>
-                  <Input type="file" name="zipData" onChange={
-                    (e) =>
+                  <Label>الملفات</Label>
+                  <span>{selectedValue?.fileName}</span>
+                  <Input
+                    type="file"
+                    name="zipData"
+                    onChange={(e) =>
                       setselectedValue({
                         ...selectedValue,
                         zipData: e.target.files?.[0] || null,
                         fileName: e.target.files?.[0].name || "",
                       })
-
-                  } />
+                    }
+                  />
                 </CardContent>
                 <CardFooter className="gap-6">
                   <Button type="submit">حفظ التغييرات</Button>
-                  <Link href={`http://localhost:8080/demande/download/${selectedValue?.id}`}><Button >download file</Button></Link>
+                  <Link
+                    href={`http://localhost:8080/demande/download/${selectedValue?.id}`}
+                  >
+                    <Button>download file</Button>
+                  </Link>
                 </CardFooter>
               </form>
             </Card>
           </TabsContent>
         </Tabs>
-
-
-
-
-      </MaxWidthWrapper >
+      </MaxWidthWrapper>
     </>
   );
 };

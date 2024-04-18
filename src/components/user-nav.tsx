@@ -34,7 +34,7 @@ export function UserNav() {
   useQuery("currentUser", getCurrentUser(), {
     onSuccess: (data) => {
       setUser(data);
-    },
+    }, // Set the user state to the data returned from the getCurrentUser function
   });
 
   const [open, setopen] = useState(false);
@@ -49,13 +49,26 @@ export function UserNav() {
     try {
       e.preventDefault();
       const element = document.getElementById("password") as HTMLInputElement;
-      if (
-        password !== user?.password &&
-        element.value !== "" &&
-        user?.password == ""
-      ) {
+      if (password !== user?.password && element.value !== "") {
         toast({
           description: "كلمة المرور غير متطابقة",
+          className: "destructive",
+          duration: 3000,
+          title: "خطأ",
+        });
+        return;
+      }
+      if (user && user.password && user.password.length < 6) {
+        toast({
+          description: "كلمة المرور يجب أن تكون أكثر من 6 أحرف",
+          className: "destructive",
+          duration: 3000,
+          title: "خطأ",
+        });
+        return;
+      } else if (user && user.password && user.password.trim() === "") {
+        toast({
+          description: "كلمة المرور لا يمكن أن تكون فارغة",
           className: "destructive",
           duration: 3000,
           title: "خطأ",
