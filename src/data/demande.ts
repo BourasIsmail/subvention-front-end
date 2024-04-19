@@ -8,8 +8,6 @@ type Coordination = {
   nom?: string;
 };
 
-
-
 export type Demandes = {
   id?: number;
   nomAssociation?: string;
@@ -47,8 +45,12 @@ export type Demandes = {
   zipData?: File | null;
   fileName?: string | null;
   fileType?: string | null;
+  supprime: boolean;
+  dateSuppression: string | null;
+  dateDerniereModification: string | null;
+  montantSuggereParAssoc: number | null;
+  montantSuggereParDeleg: number | null;
 };
-
 
 export const data: Demandes[] = [
   {
@@ -95,8 +97,11 @@ export const data: Demandes[] = [
     zipData: null,
     fileName: null,
     fileType: null,
+    supprime: false,
+    dateSuppression: null,
+    dateDerniereModification: null,
+    montantSuggereParAssoc: null,
+    montantSuggereParDeleg: null,
   },
   // Other objects follow similar structure with their respective values...
 ];
-
-

@@ -37,6 +37,13 @@ export async function getDemandeByDeleguationId(id: number) {
   } catch (error) {}
 }
 
+export async function getDemandeSupprime() {
+  try {
+    const response = await api.get(`/demande/corbeille`);
+    return response.data as Demandes[];
+  } catch (error) {}
+}
+
 export async function getAllDemandes() {
   try {
     const response = await api.get(`/demande`);
@@ -153,4 +160,6 @@ export interface Demande {
   supprime: boolean;
   dateSuppression: string | null;
   dateDerniereModification: string | null;
+  montantSuggereParAssoc: number | null;
+  montantSuggereParDeleg: number | null;
 }

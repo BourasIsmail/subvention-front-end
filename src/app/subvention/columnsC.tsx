@@ -1,10 +1,6 @@
-//columns.tsx (client component) will contain our column definitions.
-"use client";
-
-import { Demandes } from "@/data/demande";
 import { ColumnDef } from "@tanstack/react-table";
+import { Demandes } from "@/data/demande";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -29,7 +25,8 @@ import {
 import { useState } from "react";
 import { api } from "@/api";
 import { useQueryClient } from "react-query";
-export const columns: ColumnDef<Demandes>[] = [
+
+export const columnsC: ColumnDef<Demandes>[] = [
   {
     accessorKey: "codeDemande",
     header: "رقم الطلب",
@@ -66,16 +63,16 @@ export const columns: ColumnDef<Demandes>[] = [
     footer: "المندوبية",
   },
   {
-    accessorKey: "dateDemande",
-    header: "تاريخ الطلب",
+    accessorKey: "dateSuppression",
+    header: "تاريخ حذف الطلب",
     cell(props) {
       const demande = props.row.original;
-      const dateDemande = demande.dateDemande
-        ? new Date(demande.dateDemande)
+      const dateDemande = demande.dateSuppression
+        ? new Date(demande.dateSuppression)
         : null;
       return dateDemande ? dateDemande.toLocaleDateString("ar-MA") : "";
     },
-    footer: "تاريخ الطلب",
+    footer: "تاريخ حذف الطلب",
   },
   {
     accessorKey: "etat",
@@ -115,8 +112,8 @@ export const columns: ColumnDef<Demandes>[] = [
 
       const queryClient = useQueryClient();
 
-      const deleteDemande = async () => {
-        const res = await api.delete(`/demande/${demande.id}`);
+      const restaurerDemande = async () => {
+        const res = await api.put(`/demande/restaurer/${demande.id}`);
         queryClient.invalidateQueries("AllDemandes");
         queryClient.invalidateQueries("DemandesSupprime");
       };
@@ -145,7 +142,7 @@ export const columns: ColumnDef<Demandes>[] = [
                 <DropdownMenuItem>تحديث</DropdownMenuItem>
               </Link>
               <DropdownMenuItem onClick={() => setopen(true)}>
-                حذف الطلب
+                إسترجاع الطلب
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -156,13 +153,12 @@ export const columns: ColumnDef<Demandes>[] = [
                 <AlertDialogHeader>
                   <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
                   <AlertDialogDescription>
-                    هذا الإجراء لا يمكن التراجع عنه. سيتم حذف هذا الطلب بشكل
-                    دائم وإزالة البيانات الخاصة بك من خوادمنا.
+                    هذا الإجراء لا يمكن التراجع عنه. سيتم إسترجاع هذا الطلب.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="gap-8">
                   <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                  <AlertDialogAction onClick={deleteDemande}>
+                  <AlertDialogAction onClick={restaurerDemande}>
                     متابعة
                   </AlertDialogAction>
                 </AlertDialogFooter>

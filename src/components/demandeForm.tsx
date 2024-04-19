@@ -1,15 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
+import { OPTIONS } from "@/data/options";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
   getAllCoordination,
   getDeleguationByCoordinationId,
 } from "@/api/demande";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { parse } from "path";
 import { useState } from "react";
@@ -26,17 +24,7 @@ import {
 import { api } from "@/api";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -47,13 +35,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { toast } from "@/components/ui/use-toast";
 import { Separator } from "./ui/separator";
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 
 const formSchema = z.object({
   nomAssociation: z.string(),
@@ -80,6 +64,8 @@ const formSchema = z.object({
   typeMilieu: z.enum(["قروي", "حظري"]),
   rib: z.string().length(24),
   capaciteChargeTotal: z.coerce.number(),
+  cible: z.array(z.string()),
+  montantSuggereParAssoc: z.coerce.number(),
 });
 
 export function DemandeForm() {
@@ -123,10 +109,14 @@ export function DemandeForm() {
       telDirecteur: "",
       emailDirecteur: "",
       capaciteChargeTotal: 0,
+      rib: "",
+      cible: [],
+      montantSuggereParAssoc: 0,
     },
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>, e: any) => {
+    /*
     try {
       e.preventDefault();
       console.log(values);
@@ -141,7 +131,9 @@ export function DemandeForm() {
         duration: 3000,
         title: "خطأ",
       });
-    }
+    }*/
+
+    console.log(values);
   };
 
   const [selectedValue, setselectedValue] = useState<typeof formSchema>();
@@ -158,6 +150,7 @@ export function DemandeForm() {
       getDeleguationByCoordinationId(form.watch("coordination.id")),
     enabled: !!form.watch("coordination.id"), // Remove the unnecessary argument from the function call
   });
+
   return (
     <>
       <Form {...form}>
@@ -298,6 +291,25 @@ export function DemandeForm() {
                   }}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="montantSuggereParAssoc"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>المبلغ المقترح من طرف الجمعية</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="w-1/2"
+                          placeholder="المبلغ المقترح من طرف الجمعية"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
               <div className="flex flex-row gap-4 justify-between">
                 <FormField
                   control={form.control}
@@ -524,7 +536,30 @@ export function DemandeForm() {
                   }}
                 />
               </div>
-
+              <FormField
+                control={form.control}
+                name="cible"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>الفئة المستهدفة</FormLabel>
+                      <FormControl>
+                        <MultipleSelector
+                          defaultOptions={OPTIONS}
+                          placeholder="الفئة المستهدفة"
+                          onChange={(e) => {
+                            field.value = e.map(
+                              (option: Option) => option.value
+                            );
+                            console.log(field.value);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
               <div className="flex flex-row justify-between">
                 <FormField
                   control={form.control}
@@ -570,7 +605,7 @@ export function DemandeForm() {
                   render={({ field }) => {
                     return (
                       <FormItem>
-                        <FormLabel>طبيعة البيئة</FormLabel>
+                        <FormLabel>المجال الطبيعي</FormLabel>
                         <FormControl>
                           <div className="flex flex-col">
                             <Select onValueChange={field.onChange}>
@@ -593,6 +628,7 @@ export function DemandeForm() {
                   }}
                 />
               </div>
+
               <div className="mt-4 gap-3 flex justify-center items-center">
                 <Button onClick={pre}>السابق </Button>
                 <Button onClick={next}>الخطوة التالية</Button>

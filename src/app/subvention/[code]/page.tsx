@@ -11,7 +11,7 @@ import {
   getDeleguationByCoordinationId,
   getDemandeByCode,
 } from "@/api/demande";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/api";
 import { UserNav } from "@/components/user-nav";
@@ -48,6 +48,9 @@ const page = ({
   };
 }) => {
   const [selectedValue, setselectedValue] = useState<Demandes>();
+
+  const queryClient = useQueryClient();
+
   const { data: demande, isLoading } = useQuery({
     queryKey: ["demande", params.code],
     queryFn: () => getDemandeByCode(params.code || ""),
@@ -106,6 +109,9 @@ const page = ({
     zipData?: File | null;
     fileName?: string | null;
     fileType?: string | null;
+    supprime: boolean;
+    dateSuppression: string | null;
+    dateDerniereModification: string | null;
   }
 
   const handleSubmit = (e: any) => {
@@ -812,7 +818,11 @@ const page = ({
                   <Link
                     href={`http://localhost:8080/demande/download/${selectedValue?.id}`}
                   >
-                    <Button>download file</Button>
+                    {demande?.zipData !== null ? (
+                      <Button>تحميل الملف</Button>
+                    ) : (
+                      <Button disabled>تحميل الملف</Button>
+                    )}
                   </Link>
                 </CardFooter>
               </form>
