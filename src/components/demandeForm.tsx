@@ -162,23 +162,21 @@ export function DemandeForm() {
             {formArray.map((v, i) => (
               <>
                 <div
-                  className={`w-[35px] my-3 text-white rounded-full ${
-                    formNo - 1 === i ||
-                    formNo - 1 === i + 1 ||
-                    formNo === formArray.length
+                  className={`w-[35px] my-3 text-white rounded-full ${formNo - 1 === i ||
+                      formNo - 1 === i + 1 ||
+                      formNo === formArray.length
                       ? "bg-blue-600"
                       : "bg-slate-400"
-                  } h-[35px] flex justify-center items-center`}
+                    } h-[35px] flex justify-center items-center`}
                 >
                   {v}
                 </div>
                 {i !== formArray.length - 1 && (
                   <div
-                    className={`w-[85px] h-[2px] ${
-                      formNo === i + 2 || formNo === formArray.length
+                    className={`w-[85px] h-[2px] ${formNo === i + 2 || formNo === formArray.length
                         ? "bg-blue-600"
                         : "bg-slate-400"
-                    }`}
+                      }`}
                   ></div>
                 )}
               </>
@@ -551,6 +549,7 @@ export function DemandeForm() {
                             field.value = e.map(
                               (option: Option) => option.value
                             );
+                            form.setValue("cible", field.value);
                             console.log(field.value);
                           }}
                         />
