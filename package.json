@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:ignore-eslint": "eslint --no-error-on-unmatched-pattern",
     "start": "next start",
     "lint": "next lint"
   },
