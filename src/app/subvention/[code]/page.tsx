@@ -1,8 +1,10 @@
 "use client";
+
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { useState } from "react";
-
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import { Demandes, data } from "@/data/demande";
+import { OPTIONS } from "@/data/options";
 import {
   Coordination,
   Deleguation,
@@ -39,6 +41,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
+import { Key } from "lucide-react";
 
 const page = ({
   params,
@@ -71,48 +74,6 @@ const page = ({
       getDeleguationByCoordinationId(selectedValue?.coordination?.id),
     enabled: !!selectedValue?.coordination?.id, // Remove the unnecessary argument from the function call
   });
-
-  interface Data {
-    id?: number;
-    nomAssociation?: string;
-    deleguation?: Deleguation;
-    coordination?: Coordination;
-    numAutorisation?: string;
-    addresse?: string;
-    telephonePresident?: string; // Updated field name
-    emailPresident?: string;
-    nomPresident?: string;
-    nbrBeneficiairesHommes?: number;
-    nbrBeneficiairesFemmes?: number;
-    nbrAgentsHommes?: number;
-    nbrAgentsFemmes?: number;
-    sujetDemande?: string;
-    nomEtablissement?: string; // Added field
-    nomDirecteur?: string | null;
-    telDirecteur?: string; // Added field
-    emailDirecteur?: string; // Added field
-    dateDemande?: string; // Updated field type to match Java entity
-    nbrTotalBeneficiaires?: number;
-    nbrTotalAgents?: number;
-    codeDemande?: string; // Updated field type to match Java entity
-    rib?: string;
-    capaciteChargeTotal?: string | null; // Updated field type to match Java entity
-    nbrBeneficiairesServiceTotal?: number;
-    nbrBeneficiairesServiceMatinal?: number;
-    nbrBeneficiairesServicePartiel?: number;
-    dateCollecte?: string | null;
-    dureeValidite?: number;
-    revenuTotalAnneePrecedente?: number;
-    recetteTotalAnneePrecedente?: number;
-    etat?: string;
-    typeMilieu?: string | null;
-    zipData?: File | null;
-    fileName?: string | null;
-    fileType?: string | null;
-    supprime: boolean;
-    dateSuppression: string | null;
-    dateDerniereModification: string | null;
-  }
 
   const handleSubmit = (e: any) => {
     try {
@@ -188,9 +149,10 @@ const page = ({
       </div>
       <MaxWidthWrapper>
         <Tabs dir="rtl" defaultValue="association" className=" pt-8 ">
-          <TabsList className="grid w-full grid-cols-4 ">
+          <TabsList className="grid w-full grid-cols-5 ">
             <TabsTrigger value="association">الجمعية</TabsTrigger>
             <TabsTrigger value="etablissement">المؤسسة</TabsTrigger>
+            <TabsTrigger value="categorie">الفئة المستهدفة</TabsTrigger>
             <TabsTrigger value="demande">الطلب</TabsTrigger>
             <TabsTrigger value="fichier">المرفقات</TabsTrigger>
           </TabsList>
@@ -301,7 +263,8 @@ const page = ({
                     <div>
                       <Label>تاريخ ٱخر جمع عام لتجديد المسير</Label>
                       <Input
-                        type="text"
+                        dir="rtl"
+                        type="date"
                         value={selectedValue?.dateCollecte || ""}
                         name="dateCollecte"
                         onChange={(e) =>
@@ -310,7 +273,7 @@ const page = ({
                             dateCollecte: e.target.value || "",
                           })
                         }
-                        placeholder="تاريخ ٱخر جمع عام لتجديد المسير"
+                        className="flex justify-end"
                       />
                     </div>
                     <div>
@@ -432,6 +395,21 @@ const page = ({
                           </SelectGroup>
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                      <Label>المبلغ المقترح من طرف الجمعية</Label>
+                      <Input
+                        type="number"
+                        value={selectedValue?.montantSuggereParAssoc?.toString()}
+                        name="montantSuggereParAssoc"
+                        onChange={(e) =>
+                          setselectedValue({
+                            ...selectedValue,
+                            montantSuggereParAssoc: Number(e.target.value),
+                          })
+                        }
+                        placeholder="المبلغ المقترح من طرف الجمعية"
+                      />
                     </div>
                   </div>
                 </CardContent>
@@ -720,6 +698,67 @@ const page = ({
                 </CardFooter>
               </Card>
             </TabsContent>
+            <TabsContent value="categorie">
+              <Card>
+                <CardHeader>
+                  <CardTitle>الفئة المستهدفة</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Label>الفئة المستهدفة</Label>
+                  <MultipleSelector
+                    defaultOptions={OPTIONS}
+                    placeholder="الفئة المستهدفة"
+                    value={selectedValue?.cible?.map((item) => {
+                      return OPTIONS.find((option) => option.value === item);
+                    })}
+                    onChange={(e) => {
+                      setselectedValue({
+                        ...selectedValue,
+                        cible: e.map((option: Option) => option.value),
+                      });
+                    }}
+                  />
+                  {selectedValue?.cible?.map((item) => {
+                    let key = "";
+                    if (item === "المسنين") {
+                      key = "age";
+                    } else if (item === "الأطفال المهملين") {
+                      key = "enfantNeglige";
+                    } else if (item === "الأطفال في وضعية صعبة") {
+                      key = "enfantSitDifficile";
+                    } else if (item === "المتمدرسون") {
+                      key = "etudiant";
+                    } else if (item === "الأشخاص في وضعية صعبة") {
+                      key = "personneSitDifficile";
+                    } else if (item === "الأشخاص ذوي الإعاقة") {
+                      key = "personneHandicape";
+                    } else if (item === "النساء في وضعية صعبة") {
+                      key = "femmeSitDifficile";
+                    }
+
+                    return (
+                      <>
+                        <Label>{item}</Label>
+                        <Input
+                          type="number"
+                          name={key}
+                          value={selectedValue?.[key]}
+                          onChange={(e) =>
+                            setselectedValue({
+                              ...selectedValue,
+                              [key]: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </>
+                    );
+                  })}
+                </CardContent>
+                <CardFooter>
+                  <Button type="submit">حفظ التغييرات</Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
             <TabsContent value="demande">
               <Card>
                 <CardHeader>
@@ -782,6 +821,21 @@ const page = ({
                           </SelectGroup>
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                      <Label>المبلغ المقترح من طرف المندوبية</Label>
+                      <Input
+                        type="number"
+                        value={selectedValue?.montantSuggereParDeleg?.toString()}
+                        name="montantSuggereParDeleg"
+                        onChange={(e) =>
+                          setselectedValue({
+                            ...selectedValue,
+                            montantSuggereParDeleg: Number(e.target.value),
+                          })
+                        }
+                        placeholder="المبلغ المقترح من طرف المندوبية"
+                      />
                     </div>
                   </div>
                 </CardContent>

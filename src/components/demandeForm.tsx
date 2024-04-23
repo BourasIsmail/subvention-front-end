@@ -116,7 +116,6 @@ export function DemandeForm() {
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>, e: any) => {
-    /*
     try {
       e.preventDefault();
       console.log(values);
@@ -131,7 +130,7 @@ export function DemandeForm() {
         duration: 3000,
         title: "خطأ",
       });
-    }*/
+    }
 
     console.log(values);
   };
@@ -162,21 +161,23 @@ export function DemandeForm() {
             {formArray.map((v, i) => (
               <>
                 <div
-                  className={`w-[35px] my-3 text-white rounded-full ${formNo - 1 === i ||
-                      formNo - 1 === i + 1 ||
-                      formNo === formArray.length
+                  className={`w-[35px] my-3 text-white rounded-full ${
+                    formNo - 1 === i ||
+                    formNo - 1 === i + 1 ||
+                    formNo === formArray.length
                       ? "bg-blue-600"
                       : "bg-slate-400"
-                    } h-[35px] flex justify-center items-center`}
+                  } h-[35px] flex justify-center items-center`}
                 >
                   {v}
                 </div>
                 {i !== formArray.length - 1 && (
                   <div
-                    className={`w-[85px] h-[2px] ${formNo === i + 2 || formNo === formArray.length
+                    className={`w-[85px] h-[2px] ${
+                      formNo === i + 2 || formNo === formArray.length
                         ? "bg-blue-600"
                         : "bg-slate-400"
-                      }`}
+                    }`}
                   ></div>
                 )}
               </>

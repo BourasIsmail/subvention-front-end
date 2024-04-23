@@ -9,6 +9,7 @@ type Coordination = {
 };
 
 export type Demandes = {
+  [key: string]: any;
   id?: number;
   nomAssociation?: string;
   deleguation?: Deleguation;
@@ -45,11 +46,19 @@ export type Demandes = {
   zipData?: File | null;
   fileName?: string | null;
   fileType?: string | null;
-  supprime: boolean;
-  dateSuppression: string | null;
-  dateDerniereModification: string | null;
-  montantSuggereParAssoc: number | null;
-  montantSuggereParDeleg: number | null;
+  supprime?: boolean;
+  dateSuppression?: string | null;
+  dateDerniereModification?: string | null;
+  montantSuggereParAssoc?: number | null;
+  montantSuggereParDeleg?: number | null;
+  cible?: string[];
+  age?: number | null;
+  enfantNeglige?: number | null;
+  enfantSitDifficile?: number | null;
+  etudiant?: number | null;
+  personneSitDifficile?: number | null;
+  personneHandicape?: number | null;
+  femmeSitDifficile?: number | null;
 };
 
 export const data: Demandes[] = [
