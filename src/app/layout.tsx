@@ -19,7 +19,11 @@ export default function RootLayout({
   return (
     <ReactQueryProvider>
       <html lang="ar" dir="rtl">
-        <body className={inter.className}>{children}
+        <head>
+          <base href="/" />
+        </head>
+        <body className={inter.className}>
+          {children}
           <Toaster />
         </body>
       </html>
