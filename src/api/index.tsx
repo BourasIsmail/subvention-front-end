@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { UserInfo } from "./User";
 
 const client = axios.create({
-  baseURL: "https://entraide.ma/subvention-api",
+  baseURL: "http://154.144.246.177:8082",
 });
 
 client.interceptors.response.use(
