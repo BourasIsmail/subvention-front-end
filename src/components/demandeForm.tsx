@@ -4,12 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { OPTIONS } from "@/data/options";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { ZodError, ZodIssue } from "zod";
 import {
   getAllCoordination,
   getDeleguationByCoordinationId,
 } from "@/api/demande";
 import { useRouter } from "next/navigation";
-import { parse } from "path";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import {
@@ -22,7 +22,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/api";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -40,29 +39,29 @@ import { Separator } from "./ui/separator";
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 
 const formSchema = z.object({
-  nomAssociation: z.string(),
+  nomAssociation: z.string().min(1, { message: "الاسم مطلوب" }),
   deleguation: z.object({
     id: z.coerce.number(),
   }),
   coordination: z.object({
     id: z.coerce.number(),
   }),
-  numAutorisation: z.string(),
-  addresse: z.string(),
-  telephonePresident: z.string(),
-  emailPresident: z.string().email(), // Assuming it's an email field
-  nomPresident: z.string(),
+  numAutorisation: z.string().min(1, { message: "الرقم مطلوب" }),
+  addresse: z.string().min(1, { message: "العنوان مطلوب" }),
+  telephonePresident: z.string().min(1, { message: "الهاتف مطلوب" }),
+  emailPresident: z.string().email().min(1, { message: "" }), // Assuming it's an email field
+  nomPresident: z.string().min(1, { message: "الاسم مطلوب" }),
   nbrBeneficiairesHommes: z.coerce.number(),
   nbrBeneficiairesFemmes: z.coerce.number(),
   nbrAgentsHommes: z.coerce.number(),
   nbrAgentsFemmes: z.coerce.number(),
-  sujetDemande: z.string().max(100),
-  nomEtablissement: z.string(),
-  nomDirecteur: z.string(),
-  telDirecteur: z.string(),
-  emailDirecteur: z.string().email(), // Assuming it's an email field
+  sujetDemande: z.string().max(100).min(1, { message: "الموضوع مطلوب" }),
+  nomEtablissement: z.string().min(1, { message: "الاسم مطلوب" }),
+  nomDirecteur: z.string().min(1, { message: "الاسم مطلوب" }),
+  telDirecteur: z.string().length(10, { message: "الهاتف مطلوب" }),
+  emailDirecteur: z.string().email().min(1), // Assuming it's an email field
   typeMilieu: z.enum(["قروي", "حظري"]),
-  rib: z.string().length(24),
+  rib: z.string().length(24, { message: "رقم الحساب البنكي مطلوب" }),
   capaciteChargeTotal: z.coerce.number(),
   cible: z.array(z.string()),
   montantSuggereParAssoc: z.coerce.number(),
@@ -90,29 +89,6 @@ export function DemandeForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      nomAssociation: "",
-      deleguation: { id: 0 },
-      coordination: { id: 0 },
-      numAutorisation: "",
-      addresse: "",
-      telephonePresident: "",
-      emailPresident: "",
-      nomPresident: "",
-      nbrBeneficiairesHommes: 0,
-      nbrBeneficiairesFemmes: 0,
-      nbrAgentsHommes: 0,
-      nbrAgentsFemmes: 0,
-      sujetDemande: "",
-      nomEtablissement: "",
-      nomDirecteur: "",
-      telDirecteur: "",
-      emailDirecteur: "",
-      capaciteChargeTotal: 0,
-      rib: "",
-      cible: [],
-      montantSuggereParAssoc: 0,
-    },
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>, e: any) => {

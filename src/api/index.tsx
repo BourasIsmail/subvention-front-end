@@ -5,6 +5,7 @@ import { UserInfo } from "./User";
 
 const client = axios.create({
   baseURL: "http://154.144.246.177:8082",
+  //baseURL: "http://localhost:8080",
 });
 
 client.interceptors.response.use(
